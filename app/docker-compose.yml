@@ -1,0 +1,58 @@
+version: '3.9'
+networks:
+  dem:
+services:
+  postgres:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=fastapi
+    networks:
+      - dem
+  pgdamin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    ports:
+      - 5000:80
+    depends_on:
+      - postgres
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
+    networks:
+      - dem
+  fastapi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile_fastapi_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    networks:
+      - dem
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+  app:
+    restart: on-failure 
+    build:
+      context: .
+      dockerfile: Dockerfile_postgres_seed
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+    networks:
+      - dem

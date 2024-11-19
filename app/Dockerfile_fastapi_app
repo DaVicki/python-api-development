@@ -1,0 +1,16 @@
+# Use the official Python base image
+FROM python:3.12.7
+
+# Update the package lists
+RUN apt-get update
+
+COPY . /app
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install the Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port 8000 for the FastAPI app
+EXPOSE 8000

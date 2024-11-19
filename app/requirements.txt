@@ -1,0 +1,5 @@
+psycopg2
+sqlalchemy
+faker
+fastapi
+uvicorn[standard]
