@@ -7,8 +7,8 @@ services:
     restart: always
     ports:
       - 5432:5432
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    # volumes:
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
@@ -45,14 +45,3 @@ services:
     networks:
       - dem
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  app:
-    restart: on-failure 
-    build:
-      context: .
-      dockerfile: Dockerfile_postgres_seed
-    volumes:
-      - .:/app
-    depends_on:
-      - postgres
-    networks:
-      - dem
