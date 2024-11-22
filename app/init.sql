@@ -1,9 +1,0 @@
-CREATE SCHEMA davicki;
-
-CREATE TABLE davicki.posts (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    content TEXT,
-    published BOOLEAN NOT NULL DEFAULT false,
-    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'utc')
-);
