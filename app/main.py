@@ -14,6 +14,7 @@ from fastapi import Depends
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
+database.create_schema()
 models.database.Base.metadata.create_all(bind=database.engine)
 database.seed()
 

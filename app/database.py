@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import CreateSchema
 from faker import Faker
 import logging
+import models
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -23,35 +24,40 @@ def get_db():
     finally:
         db.close()
 
+def create_schema():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    try:
+        session.execute(CreateSchema(SQLALCHEMY_SCHEMA_NAME, if_not_exists=True))
+        session.commit()
+        print("Schema created successfully.")
+    except Exception as e:
+        print(f"Error creating schema: {e}")
+    finally:
+        session.close()
+
 def seed():
     faker = Faker('en_US')
 
+    # check if database has some seed data
+    if next(get_db()).query(models.Post).first() is not None:
+        LOGGER.info('Database already seeded')
+        return
+
     for i in range(10):
-        LOGGER.info(f'Inserting record number {i + 1}')
-        title = faker.name()
-        content = faker.text()
-        published = faker.boolean()
+        schema_post = {'title': faker.name(), 'content': faker.text(), 'published': faker.boolean()}
+        model_post = models.Post(**schema_post)
 
-        insert_query = text("INSERT INTO davicki.posts (title, content, published) VALUES (:title, :content, :published)")
+        db_generator = get_db()
+        db = next(db_generator)
 
-        try:
-            with engine.connect() as connection:
-                # Use a transaction block to ensure changes are committed
-                with connection.begin():
-                    connection.execute(insert_query, {"title": title, "content": content, "published": published})
-                LOGGER.info(f"Data inserted successfully {i + 1}")
-        except Exception as error:
-            LOGGER.warning(f"Failed to insert record {i + 1}: {error}")
+        try: 
+            db.add(model_post)
+            db.commit()
+            db.refresh(model_post)
+        finally:
+            db_generator.close()
 
-Session = sessionmaker(bind=engine)
-session = Session()
+        LOGGER.info(f'Inserted record number {model_post.id}')
 
-try:
-    session.execute(CreateSchema(SQLALCHEMY_SCHEMA_NAME, if_not_exists=True))
-    session.commit()
-    print("Schema created successfully.")
-except Exception as e:
-    print(f"Error creating schema: {e}")
-finally:
-    session.close()
-    

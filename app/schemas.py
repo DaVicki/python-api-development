@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
+from sqlalchemy import Column
+from sqlalchemy import String
 
 # Base Post schema
 class PostBase(BaseModel):
