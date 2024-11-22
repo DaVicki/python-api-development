@@ -31,9 +31,9 @@ def create_schema():
     try:
         session.execute(CreateSchema(SQLALCHEMY_SCHEMA_NAME, if_not_exists=True))
         session.commit()
-        print("Schema created successfully.")
+        LOGGER.info("Schema created successfully.")
     except Exception as e:
-        print(f"Error creating schema: {e}")
+        LOGGER.info(f"Error creating schema: {e}")
     finally:
         session.close()
 
