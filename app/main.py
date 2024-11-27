@@ -5,11 +5,9 @@ from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import insert, select, delete, update
 import logging
-import schemas
 import models
 import database
-import utils
-from routers import user, post
+from routers import user, post, auth
 
 from fastapi import Depends
 
@@ -27,4 +25,5 @@ app = FastAPI()
 
 app.include_router(post.router)
 app.include_router(user.router)
+app.include_router(auth.router)
 
