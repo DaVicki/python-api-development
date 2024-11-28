@@ -5,6 +5,7 @@ import logging
 import schemas
 import models
 import database
+import oauth2
 
 from fastapi import Depends
 
@@ -18,12 +19,12 @@ router = APIRouter(
 
 # Decorator - turns function into a path operator
 @router.get("/", response_model=List[schemas.Post])
-def get_posts(db: Session = Depends(database.get_db)):
+def get_posts(db: Session = Depends(database.get_db), user_id:int = Depends(oauth2.get_current_user)):
     posts = db.query(models.Post).all()
     return posts
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
-def create_posts(post: schemas.PostCreate, db: Session = Depends(database.get_db)):
+def create_posts(post: schemas.PostCreate, db: Session = Depends(database.get_db), user_id:int = Depends(oauth2.get_current_user)):
     model_post = models.Post(**post.model_dump())
     db.add(model_post)
     db.commit()
@@ -31,7 +32,7 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(database.get_db
     return model_post
 
 @router.get("/{id}", response_model=schemas.Post)
-def get_post(id: int, db: Session = Depends(database.get_db)):
+def get_post(id: int, db: Session = Depends(database.get_db), user_id:int = Depends(oauth2.get_current_user)):
     post = db.query(models.Post).filter(models.Post.id == id).first()
 
     if not post:
@@ -41,7 +42,7 @@ def get_post(id: int, db: Session = Depends(database.get_db)):
     return post
 
 @router.put("/{id}", response_model=schemas.Post)
-def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(database.get_db)):
+def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(database.get_db), user_id:int = Depends(oauth2.get_current_user)):
     post_query = db.query(models.Post).filter(models.Post.id == id) 
 
     if post_query.first() == None:
@@ -55,7 +56,7 @@ def update_post(id: int, post: schemas.PostCreate, db: Session = Depends(databas
     return post_query.first()
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(database.get_db)):
+def delete_post(id: int, db: Session = Depends(database.get_db), user_id:int = Depends(oauth2.get_current_user)):
     post_query = db.query(models.Post).filter(models.Post.id == id)
     
     if post_query.first() == None:
