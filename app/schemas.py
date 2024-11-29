@@ -6,6 +6,7 @@ from datetime import datetime
 class PostBase(BaseModel):
     title: str
     content: str
+    user_id: int
     published: bool = True
 
 # PostCreate 

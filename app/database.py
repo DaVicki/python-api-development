@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import CreateSchema
 from faker import Faker
 import logging
-import models
+import models, utils
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
@@ -41,12 +41,30 @@ def seed():
     faker = Faker('en_US')
 
     # check if database has some seed data
-    if next(get_db()).query(models.Post).first() is not None:
+    if next(get_db()).query(models.User).first() is not None:
         LOGGER.info('Database already seeded')
         return
+    
+    # set up a default user
+    default_user = 'admin@admin.com'
+    default_password = 'admin'
 
+    schema_user = {'email': default_user, 'password': utils.hash_password(default_password)}
+    model_user = models.User(**schema_user)
+    db_generator = get_db()
+    db = next(db_generator)
+    try:
+        db.add(model_user)
+        db.commit()
+        db.refresh(model_user)
+    finally:
+        db_generator.close()
+    
+    LOGGER.info(f'Inserted record number {model_user.id}')
+
+    # seed some fake posts
     for i in range(10):
-        schema_post = {'title': faker.name(), 'content': faker.text(), 'published': faker.boolean()}
+        schema_post = {'title': faker.name(), 'content': faker.text(), 'user_id': model_user.id, 'published': faker.boolean()}
         model_post = models.Post(**schema_post)
 
         db_generator = get_db()
