@@ -1,6 +1,7 @@
 import database
 from sqlalchemy import Column, Integer, Boolean, String, TIMESTAMP, text
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 class User(database.Base):
     __tablename__ = "users"
@@ -21,6 +22,8 @@ class Post(database.Base):
     # set behaviour to cascade on delete for the below foreign key
     # so that when a user is deleted, all their posts are deleted as well
     # without having to manually delete them
-    user_id = Column(Integer, ForeignKey(f"{database.SQLALCHEMY_SCHEMA_NAME}.users.id", ondelete="CASCADE"), nullable=False)
+    owner_id = Column(Integer, ForeignKey(f"{database.SQLALCHEMY_SCHEMA_NAME}.users.id", ondelete="CASCADE"), nullable=False)
+    # user
+    owner = relationship("User")
     published = Column(Boolean, nullable=False, server_default='TRUE')
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))

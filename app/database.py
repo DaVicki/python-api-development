@@ -5,11 +5,13 @@ from sqlalchemy.schema import CreateSchema
 from faker import Faker
 import logging
 import models, utils
+from config import settings
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:postgres@postgres:5432/fastapi'
+# SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:postgres@postgres:5432/fastapi'
+SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 SQLALCHEMY_SCHEMA_NAME = 'davicki'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -64,7 +66,7 @@ def seed():
 
     # seed some fake posts
     for i in range(10):
-        schema_post = {'title': faker.name(), 'content': faker.text(), 'user_id': model_user.id, 'published': faker.boolean()}
+        schema_post = {'title': faker.name(), 'content': faker.text(), 'owner_id': model_user.id, 'published': faker.boolean()}
         model_post = models.Post(**schema_post)
 
         db_generator = get_db()

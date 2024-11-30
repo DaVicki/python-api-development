@@ -3,6 +3,7 @@ sqlalchemy
 faker
 fastapi
 uvicorn[standard]
+pydantic-settings
 pydantic[email]
 passlib[bcrypt]
 python-jose[cryptography]

@@ -1,24 +1,15 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends
-from fastapi.params import Body
-from typing import Optional,List
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import sessionmaker, Session
-from sqlalchemy import insert, select, delete, update
-import logging
-import models
-import database
+from fastapi import FastAPI 
+import logging, models, database, config
 from routers import user, post, auth
-
-from fastapi import Depends
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-
-
 # set up database
 database.create_schema()
+# create tables
 models.database.Base.metadata.create_all(bind=database.engine)
+# seed data
 database.seed()
 
 app = FastAPI()

@@ -6,16 +6,25 @@ from datetime import datetime
 class PostBase(BaseModel):
     title: str
     content: str
-    user_id: int
     published: bool = True
 
 # PostCreate 
 class PostCreate(PostBase):
     pass
 
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
 # Reponse
 class Post(PostBase):
     id: int
+    owner_id: int
+    owner: UserOut
     created_at: datetime
 
     class Config:
@@ -25,13 +34,6 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
-class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
-
-    class Config:
-        orm_mode = True
 
 class UserLogin(BaseModel):
     email: EmailStr
