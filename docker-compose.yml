@@ -37,7 +37,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - .:/app
+      - ./app:/python-api-development/app
+    working_dir: /python-api-development/app
     depends_on:
       - postgres
     networks:
