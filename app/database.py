@@ -51,33 +51,33 @@ def seed():
     default_user = 'admin@admin.com'
     default_password = 'admin'
 
-    schema_user = {'email': default_user, 'password': utils.hash_password(default_password)}
-    model_user = models.User(**schema_user)
+    sample_user = {'email': default_user, 'password': utils.hash_password(default_password)}
+    model_user = models.User(**sample_user)
+    insert_record(model_user)
+
+    # seed some fake posts
+    for i in range(10):
+        sample_post = {'title': faker.name(), 'content': faker.text(), 'owner_id': model_user.id, 'published': faker.boolean()}
+        model_post = models.Post(**sample_post)
+        insert_record(model_post) 
+
+        sample_vote = {'post_id': model_post.id, 'user_id': model_user.id}
+        model_vote = models.Vote(**sample_vote)
+        insert_record(model_vote) 
+
+def insert_record(model): 
     db_generator = get_db()
     db = next(db_generator)
+
+
     try:
-        db.add(model_user)
+        db.add(model)
         db.commit()
-        db.refresh(model_user)
+        db.refresh(model)
     finally:
         db_generator.close()
     
-    LOGGER.info(f'Inserted record number {model_user.id}')
-
-    # seed some fake posts
-    for i in range(3):
-        schema_post = {'title': faker.name(), 'content': faker.text(), 'owner_id': model_user.id, 'published': faker.boolean()}
-        model_post = models.Post(**schema_post)
-
-        db_generator = get_db()
-        db = next(db_generator)
-
-        try: 
-            db.add(model_post)
-            db.commit()
-            db.refresh(model_post)
-        finally:
-            db_generator.close()
-
-        LOGGER.info(f'Inserted record number {model_post.id}')
-
+    # log the model dump
+    LOGGER.info(f'Inserted record {model}')
+    if hasattr(model, 'id'):
+        return model.id

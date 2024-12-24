@@ -7,9 +7,7 @@ DOCKER_COMPOSE_UP = "docker-compose up --build -d"
 DOCKER_COMPOSE_DOWN = "docker-compose down"
 
 # URLs to open
-urls = [
-    "http://localhost:5000/browser/",
-]
+url = "http://localhost:5000/browser/" # postgres admin
 
 # Function to run a shell command
 
@@ -28,13 +26,15 @@ run_command(DOCKER_COMPOSE_DOWN + "&&" + DOCKER_COMPOSE_UP)
 
 # Wait for services to start
 print("Waiting for services to start...")
-time.sleep(30)  # Adjust this time as needed based on your services
+# time.sleep(30)  # Adjust this time as needed based on your services
 
 # Open URLs in Chrome
-for url in urls:
-    print(f"Opening URL: {url}")
-    webbrowser.open(url)
+# for url in urls:
+    # print(f"Open URL: {url}")
+    # webbrowser.open(url)
 
 # Provide user instructions
+print(f"postgres admin url : {url}")
+print(f"Log command : docker logs --follow <container_id>")
 print("Services are up and URLs opened. Run the following command to stop Docker Compose:")
 print(DOCKER_COMPOSE_DOWN)
