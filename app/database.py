@@ -65,7 +65,7 @@ def seed():
     LOGGER.info(f'Inserted record number {model_user.id}')
 
     # seed some fake posts
-    for i in range(10):
+    for i in range(3):
         schema_post = {'title': faker.name(), 'content': faker.text(), 'owner_id': model_user.id, 'published': faker.boolean()}
         model_post = models.Post(**schema_post)
 

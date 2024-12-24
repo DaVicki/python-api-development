@@ -27,3 +27,10 @@ class Post(database.Base):
     owner = relationship("User")
     published = Column(Boolean, nullable=False, server_default='TRUE')
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
+
+class Vote(database.Base):
+    __tablename__ = "votes"
+    __table_args__ = {'schema': database.SQLALCHEMY_SCHEMA_NAME}
+
+    post_id = Column(Integer, ForeignKey(f"{database.SQLALCHEMY_SCHEMA_NAME}.posts.id", ondelete="CASCADE"), primary_key=True)
+    user_id = Column(Integer, ForeignKey(f"{database.SQLALCHEMY_SCHEMA_NAME}.users.id", ondelete="CASCADE"), primary_key=True)
