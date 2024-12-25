@@ -1,0 +1,12 @@
+psycopg2
+sqlalchemy
+faker
+fastapi
+uvicorn[standard]
+pydantic-settings
+pydantic[email]
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+# Database migration tool
+alembic

@@ -22,7 +22,7 @@ def run_command(command):
 
 
 # Start Docker Compose
-run_command(DOCKER_COMPOSE_DOWN + "&&" + DOCKER_COMPOSE_UP)
+run_command(DOCKER_COMPOSE_DOWN + " && " + DOCKER_COMPOSE_UP)
 
 # Wait for services to start
 print("Waiting for services to start...")

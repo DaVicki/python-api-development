@@ -36,6 +36,8 @@ services:
       dockerfile: Dockerfile_fastapi_app
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     volumes:
       - ./app:/python-api-development/app
     working_dir: /python-api-development/app
