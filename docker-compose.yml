@@ -26,8 +26,8 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./servers.json:/pgadmin4/servers.json
-      - ./pgpass:/pgpass
+      - ./app/servers.json:/pgadmin4/servers.json
+      - ./app/pgpass:/pgpass
     networks:
       - dem
   fastapi-app:

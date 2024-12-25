@@ -1,18 +1,25 @@
 from fastapi import FastAPI 
 import logging, models, database, config
 from routers import user, post, auth, vote
+from alembic.config import Config
+from alembic import command
+from database_migration import run_migrations
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-# set up database
-database.create_schema()
-# create tables
-models.database.Base.metadata.create_all(bind=database.engine)
-# seed data
-database.seed()
-
 app = FastAPI()
+
+@app.on_event("startup")
+async def startup_event():
+    # Create schema
+    database.create_schema()
+
+    # Run Alembic migrations during application startup
+    run_migrations()
+
+    # seed data
+    database.seed()
 
 app.include_router(post.router)
 app.include_router(user.router)
