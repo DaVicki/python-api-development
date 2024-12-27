@@ -13,6 +13,8 @@ services:
       - POSTGRES_DB=fastapi
     networks:
       - dem
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
   pgdamin:
     image: dpage/pgadmin4:latest
     restart: always
@@ -46,3 +48,6 @@ services:
     networks:
       - dem
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+    postgres-db:
