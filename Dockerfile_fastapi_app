@@ -4,13 +4,18 @@ FROM python:3.12.7
 # Update the package lists
 RUN apt-get update
 
-COPY . /python-api-development
-
 # Set the working directory in the container
-WORKDIR /python-api-development/app
+WORKDIR /app
+
+# Copy the requirements file to working directory
+COPY ./app/requirements.txt ./
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy all the code
+# requirements is copied seperately to create a layer so that pip install exec is cached
+COPY ./app /app
 
 # Expose port 8000 for the FastAPI app
 EXPOSE 8000
