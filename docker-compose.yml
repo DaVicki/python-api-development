@@ -30,10 +30,10 @@ services:
       - ./app/pgpass:/pgpass
     networks:
       - dem
-  fastapi-app:
+  api:
     build:
       context: .
-      dockerfile: Dockerfile_fastapi_app
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     env_file:
