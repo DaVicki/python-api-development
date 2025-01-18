@@ -35,6 +35,7 @@ print("Waiting for services to start...")
 
 # Provide user instructions
 print(f"postgres admin url : {url}")
+print(f"postman: https://web.postman.co/workspace/My-Workspace~37bddd22-2e08-49ab-8576-db61abf793ac/collection/24530659-8c9509a5-259f-4821-a9b0-f93db79160d3")
 print(f"Log command : docker logs --follow <container_id>")
 print("Services are up and URLs opened. Run the following command to stop Docker Compose:")
 print(DOCKER_COMPOSE_DOWN)
