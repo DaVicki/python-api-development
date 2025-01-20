@@ -13,8 +13,8 @@ services:
       - POSTGRES_DB=fastapi
     networks:
       - dem
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
+    # volumes:
+    #   - postgres-db:/var/lib/postgresql/data
   pgdamin:
     image: dpage/pgadmin4:latest
     restart: always
@@ -34,12 +34,12 @@ services:
       - dem
   api:
     build:
-      context: .
+      context: ./app
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - ./app/.env
     volumes:
       - ./app:/app
     working_dir: /app

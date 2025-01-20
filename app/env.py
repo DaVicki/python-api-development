@@ -3,6 +3,7 @@ from sqlalchemy import pool
 
 from alembic import context
 import logging
+import os
 
 import database
 from config import settings
@@ -15,16 +16,18 @@ LOGGER = logging.getLogger("alembic.runtime.migration")
 # access to the values within the .ini file in use.
 config = context.config
 
-#hard coded to work with alembic on local
+# hard coded to work with alembic on local
 # SQLALCHEMY_DATABASE_URL = f'postgresql://postgres:postgres@localhost:5432/fastapi'
 
+database.create_schema()
+
 config.set_main_option("sqlalchemy.url", database.SQLALCHEMY_DATABASE_URL)
-config.set_main_option("version_table_schema", "davicki")
+config.set_main_option("version_table_schema", settings.database_schema)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 # if config.config_file_name is not None:
-    # fileConfig(config.config_file_name)
+# fileConfig(config.config_file_name)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -38,6 +41,7 @@ target_metadata = database.Base.metadata
 # ... etc.
 
 version_table_schema = config.get_main_option("version_table_schema")
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

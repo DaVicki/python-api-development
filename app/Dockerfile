@@ -8,14 +8,14 @@ RUN apt-get update
 WORKDIR /app
 
 # Copy the requirements file to working directory
-COPY ./app/requirements.txt ./
+COPY requirements.txt .
 
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all the code
 # requirements is copied seperately to create a layer so that pip install exec is cached
-COPY ./app /app
+COPY . . 
 
 # Expose port 8000 for the FastAPI app
 EXPOSE 8000
