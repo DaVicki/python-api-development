@@ -6,6 +6,7 @@ import logging
 import os
 
 import database
+import models
 from config import settings
 
 logging.basicConfig(level=logging.INFO,
@@ -75,8 +76,10 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    alembic_config = config.get_section(config.config_ini_section)
+    alembic_config['sqlalchemy.url'] = config.get_main_option("sqlalchemy.url")
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        alembic_config,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
