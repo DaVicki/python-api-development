@@ -6,6 +6,9 @@ from alembic import command
 import database_migration
 from fastapi.middleware.cors import CORSMiddleware
 
+import sys
+print("PYTHONPATH:", sys.path)
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
