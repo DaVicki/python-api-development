@@ -13,17 +13,25 @@ import models, utils
 from config import settings
 import os
 import database
+from pathlib import Path
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-def run_migrations():
-    # Get the path to the alembic.ini file
-    alembic_cfg_path = os.path.join(os.path.dirname(__file__), "alembic.ini")
+def run_migrations(db_url=database.SQLALCHEMY_DATABASE_URL):
+    project_root = Path(__file__).resolve().parent.parent
+    alembic_cfg_path = project_root / "app" / "alembic.ini"
 
     # Load the Alembic Config
     alembic_cfg = Config(alembic_cfg_path)
+    alembic_cfg.set_main_option("script_location", str(project_root / "app" / "alembic"))
+
+    # override the url if present. This is set up so as to enable test set up run migration 
+    # on test DB.
+    alembic_cfg.set_main_option("sqlalchemy.url", db_url)
+
+    LOGGER.info(f'config check: {alembic_cfg.get_main_option("sqlalchemy.url")}')
 
     # Run the `upgrade` command to apply all migrations
     command.upgrade(alembic_cfg, "head")
