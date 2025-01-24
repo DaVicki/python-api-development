@@ -14,13 +14,14 @@ from sqlalchemy_utils import database_exists, create_database, drop_database
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture
 def init():
     # drop test db
     if database_exists(engine.url):
         drop_database(engine.url)
 
     # create test database 'fastapi_test'
+    print(f'db value: {SQLALCHEMY_DATABASE_URL}')
     if not database_exists(engine.url):
         create_database(engine.url) 
     
@@ -30,7 +31,7 @@ def init():
     yield
 
 @pytest.fixture
-def client():
+def client(init):
     # create test client with test db
     def override_get_db():
         db = TestingSessionLocal()

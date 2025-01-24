@@ -28,6 +28,7 @@ def create_schema():
     session = Session()
 
     try:
+        LOGGER.info(f"Creating schema...{settings.database_schema}")
         session.execute(CreateSchema(
             settings.database_schema, if_not_exists=True))
         session.commit()
