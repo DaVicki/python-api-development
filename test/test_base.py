@@ -9,36 +9,41 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from app.database import get_db, SQLALCHEMY_DATABASE_URL
 from sqlalchemy_utils import database_exists, create_database, drop_database
+from sqlalchemy.pool import QueuePool
 
 # DB url points to test db
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-@pytest.fixture
-def init():
+@pytest.fixture(scope="session")
+def session():
     # drop test db
     if database_exists(engine.url):
         drop_database(engine.url)
 
-    # create test database 'fastapi_test'
-    print(f'db value: {SQLALCHEMY_DATABASE_URL}')
     if not database_exists(engine.url):
         create_database(engine.url) 
     
-    # run db migration
-    database_migration.run_migrations(SQLALCHEMY_DATABASE_URL)
 
-    yield
+    db = TestingSessionLocal()
+    
+    try:
+        yield db
+    finally:
+        db.close()
 
 @pytest.fixture
-def client(init):
+def client(session):
+    # run db migration
+    database_migration.run_migrations(SQLALCHEMY_DATABASE_URL, 'base')
+    database_migration.run_migrations(SQLALCHEMY_DATABASE_URL, 'head')
+
     # create test client with test db
     def override_get_db():
-        db = TestingSessionLocal()
         try:
-            yield db
+            yield session
         finally:
-            db.close()
+            session.close()
 
     app.dependency_overrides[get_db] = override_get_db
-    return TestClient(app)
+    yield TestClient(app)

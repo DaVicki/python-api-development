@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 LOGGER = logging.getLogger(__name__)
 
-def run_migrations(db_url=database.SQLALCHEMY_DATABASE_URL):
+def run_migrations(db_url=database.SQLALCHEMY_DATABASE_URL, cmd='head'):
     project_root = Path(__file__).resolve().parent.parent
     alembic_cfg_path = project_root / "app" / "alembic.ini"
 
@@ -34,7 +34,7 @@ def run_migrations(db_url=database.SQLALCHEMY_DATABASE_URL):
     LOGGER.info(f'config check: {alembic_cfg.get_main_option("sqlalchemy.url")}')
 
     # Run the `upgrade` command to apply all migrations
-    command.upgrade(alembic_cfg, "head")
+    command.upgrade(alembic_cfg, cmd)
 
 def seed():
     faker = Faker('en_US')

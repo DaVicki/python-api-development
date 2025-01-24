@@ -1,4 +1,4 @@
-from test_base import client, init
+from test_base import client, session
 import pytest
 from faker import Faker
 from app import schemas
