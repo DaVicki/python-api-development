@@ -34,7 +34,10 @@ def run_migrations(db_url=database.SQLALCHEMY_DATABASE_URL, cmd='head'):
     LOGGER.info(f'config check: {alembic_cfg.get_main_option("sqlalchemy.url")}')
 
     # Run the `upgrade` command to apply all migrations
-    command.upgrade(alembic_cfg, cmd)
+    if cmd == 'base':
+        command.downgrade(alembic_cfg, 'base')
+    elif cmd == 'head':
+        command.upgrade(alembic_cfg, 'head')
 
 def seed():
     faker = Faker('en_US')
