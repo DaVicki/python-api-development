@@ -28,7 +28,7 @@ jobs:
       - name: Install Docker
         uses: actions/setup-docker@v3
       - name: Install Docker compose
-        uses: docker/compose@v2
+        uses: docker/setup-compose-action@v1
       - name: install dependencies
         run: pip install -r requirements.txt
       - name: Start docker compose services
