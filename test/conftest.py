@@ -13,6 +13,7 @@ from app.oauth2 import create_access_token
 # DB url points to test db
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+print(f"url is : {SQLALCHEMY_DATABASE_URL}")
 
 @pytest.fixture(scope="session")
 def init():
