@@ -9,11 +9,14 @@ from sqlalchemy.orm import sessionmaker
 from app.database import get_db, SQLALCHEMY_DATABASE_URL
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from app.oauth2 import create_access_token
+import logging
+
+LOGGER = logging.getLogger(__name__)
 
 # DB url points to test db
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-print(f"url is : {SQLALCHEMY_DATABASE_URL}")
+LOGGER.info(f"url is : {SQLALCHEMY_DATABASE_URL}")
 
 @pytest.fixture(scope="session")
 def init():
