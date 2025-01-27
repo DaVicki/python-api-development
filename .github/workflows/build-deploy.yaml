@@ -31,8 +31,18 @@ jobs:
         uses: docker/setup-compose-action@v1
       - name: install dependencies
         run: pip install -r requirements.txt
-      - name: Start docker compose services
+      - name: Run Docker compose
         run: docker compose up -d
+        env:
+          DATABASE_HOSTNAME: ${{ secrets.DATABASE_HOSTNAME }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          ALGORITHM: ${{ secrets.ALGORITHM }}
+          ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
       - name: run tests
         run: pytest
       
