@@ -43,10 +43,8 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ALGORITHM: ${{ secrets.ALGORITHM }}
           ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
-      - name: echo env
-        run: echo $DATABASE_HOSTNAME
       - name: run tests
-        run: pytest -v
+        run: pytest
       - name: Extract Docker image metadata
         id: meta
         uses: docker/metadata-action@v5
