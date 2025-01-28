@@ -67,4 +67,11 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        run: |
+          echo "Deploying to server..."
       
